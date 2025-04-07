@@ -1016,7 +1016,6 @@ var PACMAN = (function () {
         } else if (state === WAITING && stateChanged) {            
             stateChanged = false;
             map.draw(ctx);
-            dialog("Presiona NUEVO JUEGO para comenzar");
             document.getElementById('new-game-btn').style.display = 'block';
         } else if (state === EATEN_PAUSE && 
                    (tick - timerStart) > (Pacman.FPS / 3)) {
