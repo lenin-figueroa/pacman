@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HTML5 Pacman</title>
+  <title>Pacman Alimentos</title>
 
   <style>
     @font-face {
@@ -22,12 +22,22 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      background-position: center;
-      background-repeat: no-repeat;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      flex: 1;
     }
 
     #pacman {
@@ -35,7 +45,7 @@
       height: auto;
       width: 100%;
       max-width: 500px;
-      margin: 20px auto;
+      margin: 0 auto;
     }
 
     #shim {
@@ -55,36 +65,33 @@
     }
 
     #touch-controls {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
       display: grid;
       grid-template-areas:
         ". up ."
         "left . right"
         ". down .";
-      gap: 2px;
-      width: 120px;
-      height: 120px;
-      padding: 5px;
+      gap: 1px;
+      width: 280px;
+      height: 280px;
+      padding: 10px;
+      margin: 0 auto;
     }
 
     .control-btn {
-      width: 40px;
-      height: 40px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: rgba(255, 255, 0, 0.8);
-      border: 2px solid #000;
+      border: 3px solid #000;
       color: #000;
-      font-size: 18px;
+      font-size: 35px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       transition: all 0.2s ease;
     }
 
@@ -123,60 +130,42 @@
       transform: translate(-50%, -50%) scale(1.05);
     }
 
-    @media (max-width: 768px) {
-      body {
-        font-size: 24px;
-      }
-
-      #pacman {
-        margin: 10px auto;
+    /* Estilos para pantallas grandes (laptop/desktop) */
+    @media (min-width: 1024px) {
+      .game-container {
+        flex-direction: row;
       }
 
       #touch-controls {
-        width: 110px;
-        height: 110px;
-        gap: 2px;
-      }
-
-      .control-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 16px;
-      }
-
-      h1 {
-        margin: 10px 0;
-        font-size: 28px;
+        margin-top: 50px;
       }
     }
 
-    @media (max-width: 480px) {
-      body {
-        font-size: 20px;
+    /* Tablets y móviles */
+    @media (max-width: 1023px) {
+      .game-container {
+        flex-direction: column;
+        padding: 10px;
       }
 
       #pacman {
-        margin: 5px auto;
+        margin-bottom: 20px;
       }
 
       #touch-controls {
-        width: 100px;
-        height: 100px;
-        gap: 1px;
-        bottom: 5px;
+        width: 50%;
+        max-width: 400px;
+        height: auto;
+        aspect-ratio: 1;
       }
 
       .control-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-      }
-
-      h1 {
-        margin: 5px 0;
-        font-size: 24px;
+        width: 70px;
+        height: 70px;
+        font-size: 30px;
       }
     }
+
   </style>
 
 </head>
@@ -187,16 +176,18 @@
 
   <h1>PACMAN</h1>
 
-  <div id="pacman">
-    <button id="new-game-btn">NUEVO JUEGO</button>
-  </div>
+  <div class="game-container">
+    <div id="pacman">
+      <button id="new-game-btn">NUEVO JUEGO</button>
+    </div>
 
-  <!-- Controles táctiles -->
-  <div id="touch-controls">
-    <button id="up-btn" class="control-btn">↑</button>
-    <button id="left-btn" class="control-btn">←</button>
-    <button id="right-btn" class="control-btn">→</button>
-    <button id="down-btn" class="control-btn">↓</button>
+    <!-- Controles táctiles -->
+    <div id="touch-controls">
+      <button id="up-btn" class="control-btn">↑</button>
+      <button id="left-btn" class="control-btn">←</button>
+      <button id="right-btn" class="control-btn">→</button>
+      <button id="down-btn" class="control-btn">↓</button>
+    </div>
   </div>
 
   <script src="pacman.js"></script>
