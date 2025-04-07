@@ -291,6 +291,52 @@ Pacman.User = function (game, map) {
     keyMap[KEY.ARROW_RIGHT] = RIGHT;
     keyMap[KEY.ARROW_DOWN]  = DOWN;
 
+    function initTouchControls() {
+        function handleTouch(direction) {
+            due = direction;
+        }
+        
+        document.getElementById('up-btn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            handleTouch(UP);
+        });
+        
+        document.getElementById('left-btn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            handleTouch(LEFT);
+        });
+        
+        document.getElementById('right-btn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            handleTouch(RIGHT);
+        });
+        
+        document.getElementById('down-btn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            handleTouch(DOWN);
+        });
+        
+        document.getElementById('up-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleTouch(UP);
+        });
+        
+        document.getElementById('left-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleTouch(LEFT);
+        });
+        
+        document.getElementById('right-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleTouch(RIGHT);
+        });
+        
+        document.getElementById('down-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleTouch(DOWN);
+        });
+    }
+
     function addScore(nScore) { 
         score += nScore;
         if (score >= 10000 && score - nScore < 10000) { 
@@ -512,6 +558,7 @@ Pacman.User = function (game, map) {
     };
     
     initUser();
+    initTouchControls();
 
     return {
         "draw"          : draw,
@@ -1085,6 +1132,10 @@ var PACMAN = (function () {
         
         document.addEventListener("keydown", keyDown, true);
         document.addEventListener("keypress", keyPress, true); 
+        
+        if (user && typeof user.initTouchControls === 'function') {
+            user.initTouchControls();
+        }
         
         timer = window.setInterval(mainLoop, 1000 / Pacman.FPS);
     };
