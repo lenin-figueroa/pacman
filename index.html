@@ -1,110 +1,189 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>HTML5 Pacman</title>
-    
-    <style type="text/css">
-      @font-face {
-	    font-family: 'BDCartoonShoutRegular';
-        src: url('BD_Cartoon_Shout-webfont.ttf') format('truetype');
-	    font-weight: normal;
-	    font-style: normal;
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>HTML5 Pacman</title>
+
+  <style>
+    @font-face {
+      font-family: 'BDCartoonShoutRegular';
+      src: url('BD_Cartoon_Shout-webfont.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      background-color: #000;
+      color: #FFFF00;
+      font-family: BDCartoonShoutRegular;
+      font-size: 30px;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #pacman {
+      position: relative;
+      height: auto;
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+    }
+
+    #shim {
+      font-family: BDCartoonShoutRegular;
+      position: absolute;
+      visibility: hidden;
+    }
+
+    h1 {
+      font-family: BDCartoonShoutRegular;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    #touch-controls {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-areas:
+        ". up ."
+        "left . right"
+        ". down .";
+      gap: 5px;
+      width: 160px;
+      height: 140px;
+    }
+
+    .control-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 0, 0.8);
+      border: 2px solid #000;
+      color: #000;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+
+    .control-btn:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 0, 1);
+    }
+
+    #up-btn { grid-area: up; justify-self: center; }
+    #left-btn { grid-area: left; justify-self: start; }
+    #right-btn { grid-area: right; justify-self: end; }
+    #down-btn { grid-area: down; justify-self: center; }
+
+    #new-game-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 0, 0.9);
+      color: #000;
+      border: 3px solid #000;
+      border-radius: 15px;
+      padding: 15px 25px;
+      font-size: 20px;
+      font-weight: bold;
+      font-family: BDCartoonShoutRegular, sans-serif;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      transition: all 0.2s ease;
+    }
+
+    #new-game-btn:hover, #new-game-btn:active {
+      background: #FFFF00;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 24px;
       }
+
       #pacman {
-        height:450px;
-        width:342px;
-        margin:20px auto;
-        position: relative;
+        margin: 5px auto;
       }
-      #shim { 
-        font-family: BDCartoonShoutRegular; 
-        position:absolute;
-        visibility:hidden
-      }
-      h1 { font-family: BDCartoonShoutRegular; text-align:center; }
-      body { width:342px; margin:0px auto; font-family:sans-serif; }
-      a { text-decoration:none; }
-      
-      /* Estilos mejorados para los controles táctiles */
+
       #touch-controls {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-        width: 180px;
-        z-index: 1000;
+        bottom: 5px;
+        width: 140px;
+        height: 120px;
+        gap: 3px;
       }
-      
+
       .control-btn {
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 0, 0.7);
-        border: 3px solid #000;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-        cursor: pointer;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
       }
-      
-      .control-btn:active {
-        background: rgba(255, 255, 0, 1);
-        transform: scale(0.95);
+
+      h1 {
+        margin: 5px 0;
+        font-size: 28px;
       }
-      
-      #up-btn { grid-column: 2; }
-      #left-btn { grid-column: 1; grid-row: 2; }
-      #right-btn { grid-column: 3; grid-row: 2; }
-      #down-btn { grid-column: 2; grid-row: 3; }
-      
-      /* Estilos para el botón de nuevo juego */
-      #new-game-btn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(255, 255, 0, 0.9);
-        color: #000;
-        border: 3px solid #000;
-        border-radius: 10px;
-        padding: 15px 25px;
+    }
+
+    @media (max-width: 480px) {
+      body {
         font-size: 20px;
-        font-weight: bold;
-        font-family: BDCartoonShoutRegular, sans-serif;
-        cursor: pointer;
-        z-index: 100;
-        display: none;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        transition: all 0.2s ease;
       }
-      
-      #new-game-btn:hover, #new-game-btn:active {
-        background: #FFFF00;
-        transform: translate(-50%, -50%) scale(1.05);
+
+      #pacman {
+        margin: 2px auto;
       }
-      
-      /* Asegurar que los controles sean visibles en dispositivos móviles */
-      @media (max-width: 500px) {
-        #touch-controls {
-          bottom: 30px;
-        }
+
+      #touch-controls {
+        bottom: 2px;
+        width: 120px;
+        height: 100px;
+        gap: 2px;
       }
-    </style>
+
+      .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        border-width: 2px;
+      }
+
+      h1 {
+        margin: 2px 0;
+        font-size: 24px;
+      }
+    }
+  </style>
 
 </head>
 
 <body>
-  
+
   <div id="shim">shim for font face</div>
 
   <h1>PACMAN</h1>
@@ -112,7 +191,7 @@
   <div id="pacman">
     <button id="new-game-btn">NUEVO JUEGO</button>
   </div>
-  
+
   <!-- Controles táctiles -->
   <div id="touch-controls">
     <button id="up-btn" class="control-btn">↑</button>
@@ -128,14 +207,15 @@
     var el = document.getElementById("pacman");
     var newGameBtn = document.getElementById("new-game-btn");
 
-    if (Modernizr.canvas && Modernizr.localstorage && 
-        Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
+    if (Modernizr.canvas && Modernizr.localstorage &&
+      Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
       window.setTimeout(function () { PACMAN.init(el, "./"); }, 0);
-    } else { 
-      el.innerHTML = "Sorry, needs a decent browser<br /><small>" + 
+    } else {
+      el.innerHTML = "Sorry, needs a decent browser<br /><small>" +
         "(firefox 3.6+, Chrome 4+, Opera 10+ and Safari 4+)</small>";
     }
   </script>
 
 </body>
+
 </html>
