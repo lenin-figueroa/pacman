@@ -1012,14 +1012,17 @@ var PACMAN = (function () {
 
         if (state === PLAYING) {
             mainDraw();
+            document.getElementById('new-game-btn').style.display = 'none';
         } else if (state === WAITING && stateChanged) {            
             stateChanged = false;
             map.draw(ctx);
-            dialog("Press N to start a New game");            
+            dialog("Presiona NUEVO JUEGO para comenzar");
+            document.getElementById('new-game-btn').style.display = 'block';
         } else if (state === EATEN_PAUSE && 
                    (tick - timerStart) > (Pacman.FPS / 3)) {
             map.draw(ctx);
             setState(PLAYING);
+            document.getElementById('new-game-btn').style.display = 'none';
         } else if (state === DYING) {
             if (tick - timerStart > (Pacman.FPS * 2)) { 
                 loseLife();
@@ -1031,6 +1034,7 @@ var PACMAN = (function () {
                 }                                   
                 user.drawDead(ctx, (tick - timerStart) / (Pacman.FPS * 2));
             }
+            document.getElementById('new-game-btn').style.display = 'none';
         } else if (state === COUNTDOWN) {
             
             diff = 5 + Math.floor((timerStart - tick) / Pacman.FPS);
@@ -1038,12 +1042,14 @@ var PACMAN = (function () {
             if (diff === 0) {
                 map.draw(ctx);
                 setState(PLAYING);
+                document.getElementById('new-game-btn').style.display = 'none';
             } else {
                 if (diff !== lastTime) { 
                     lastTime = diff;
                     map.draw(ctx);
-                    dialog("Starting in: " + diff);
+                    dialog("Comenzando en: " + diff);
                 }
+                document.getElementById('new-game-btn').style.display = 'none';
             }
         } 
 
@@ -1128,7 +1134,7 @@ var PACMAN = (function () {
         
     function loaded() {
 
-        dialog("Press N to Start");
+        dialog("Presiona NUEVO JUEGO para comenzar");
         
         document.addEventListener("keydown", keyDown, true);
         document.addEventListener("keypress", keyPress, true); 
@@ -1136,6 +1142,11 @@ var PACMAN = (function () {
         if (user && typeof user.initTouchControls === 'function') {
             user.initTouchControls();
         }
+        
+        // Agregar evento para el botón de nuevo juego
+        document.getElementById('new-game-btn').addEventListener('click', function() {
+            startNewGame();
+        });
         
         timer = window.setInterval(mainLoop, 1000 / Pacman.FPS);
     };

@@ -67,6 +67,32 @@
       #right-btn { grid-column: 3; grid-row: 2; }
       #down-btn { grid-column: 2; grid-row: 3; }
       
+      /* Estilos para el botón de nuevo juego */
+      #new-game-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 0, 0.9);
+        color: #000;
+        border: 3px solid #000;
+        border-radius: 10px;
+        padding: 15px 25px;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: BDCartoonShoutRegular, sans-serif;
+        cursor: pointer;
+        z-index: 100;
+        display: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        transition: all 0.2s ease;
+      }
+      
+      #new-game-btn:hover, #new-game-btn:active {
+        background: #FFFF00;
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+      
       /* Asegurar que los controles sean visibles en dispositivos móviles */
       @media (max-width: 500px) {
         #touch-controls {
@@ -86,7 +112,9 @@
   <a href="http://arandomurl.com/">Writeup</a> |
   Code on <a href="http://arandomurl.com/">Github</a>
 
-  <div id="pacman"></div>
+  <div id="pacman">
+    <button id="new-game-btn">NUEVO JUEGO</button>
+  </div>
   
   <!-- Controles táctiles -->
   <div id="touch-controls">
@@ -101,6 +129,7 @@
 
   <script>
     var el = document.getElementById("pacman");
+    var newGameBtn = document.getElementById("new-game-btn");
 
     if (Modernizr.canvas && Modernizr.localstorage && 
         Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
