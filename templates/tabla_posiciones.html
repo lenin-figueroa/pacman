@@ -77,9 +77,20 @@
             font-weight: bold;
         }
 
-        .fecha {
-            font-size: 0.9em;
-            color: #BBB;
+        .top-3 {
+            font-weight: bold;
+        }
+
+        .oro {
+            color: #FFD700;
+        }
+
+        .plata {
+            color: #C0C0C0;
+        }
+
+        .bronce {
+            color: #CD7F32;
         }
     </style>
 </head>
@@ -97,11 +108,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for jugador in jugadores %}
+                    {% for jugador, puntuacion, fecha in jugadores_con_puntuacion %}
                     <tr>
-                        <td>{{ loop.index }}</td>
+                        <td>
+                            {% if loop.index == 1 %}
+                                <span class="top-3 oro">🥇</span>
+                            {% elif loop.index == 2 %}
+                                <span class="top-3 plata">🥈</span>
+                            {% elif loop.index == 3 %}
+                                <span class="top-3 bronce">🥉</span>
+                            {% else %}
+                                {{ loop.index }}
+                            {% endif %}
+                        </td>
                         <td>{{ jugador.nombre }}</td>
-                        <td>{{ jugador.mejor_puntuacion }}</td>
+                        <td class="puntuacion">{{ puntuacion }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -103,15 +103,23 @@
                         <th>Nombre</th>
                         <th>Teléfono</th>
                         <th>Mejor Puntuación</th>
+                        <th>Fecha y Hora</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for jugador in jugadores %}
+                    {% for jugador, puntuacion, fecha in jugadores_con_fecha %}
                     <tr>
                         <td>{{ jugador.id }}</td>
                         <td>{{ jugador.nombre }}</td>
                         <td>{{ jugador.telefono }}</td>
-                        <td>{{ jugador.mejor_puntuacion }}</td>
+                        <td class="puntuacion">{{ puntuacion }}</td>
+                        <td class="fecha">
+                            {% if fecha %}
+                                {{ fecha.strftime('%d/%m/%Y %H:%M:%S') }}
+                            {% else %}
+                                Sin puntuaciones
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

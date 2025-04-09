@@ -202,18 +202,46 @@ def guardar_puntuacion():
 
 @app.route('/tabla_posiciones')
 def tabla_posiciones():
-    # Obtener todos los jugadores y ordenarlos manualmente por mejor_puntuacion
+    # Obtener todos los jugadores con sus puntuaciones
     jugadores = Jugador.query.all()
-    jugadores_ordenados = sorted(jugadores, key=lambda j: j.mejor_puntuacion, reverse=True)
-    return render_template('tabla_posiciones.html', jugadores=jugadores_ordenados[:10])
+    
+    # Crear una lista de tuplas (jugador, mejor_puntuacion)
+    jugadores_con_puntuacion = []
+    for jugador in jugadores:
+        if jugador.puntuaciones:
+            # Encontrar la puntuación más alta
+            mejor_puntuacion = max(jugador.puntuaciones, key=lambda p: p.puntos)
+            jugadores_con_puntuacion.append((jugador, mejor_puntuacion.puntos, mejor_puntuacion.fecha))
+        else:
+            jugadores_con_puntuacion.append((jugador, 0, None))
+    
+    # Ordenar por puntuación (descendente) y fecha (ascendente en caso de empate)
+    jugadores_ordenados = sorted(jugadores_con_puntuacion, 
+                                key=lambda x: (-x[1], x[2] if x[2] else datetime.max))
+    
+    return render_template('tabla_posiciones.html', jugadores_con_puntuacion=jugadores_ordenados)
 
 @app.route('/admin')
 @login_required
 def admin_panel():
-    # Obtener todos los jugadores y ordenarlos manualmente por mejor_puntuacion
+    # Obtener todos los jugadores con sus puntuaciones
     jugadores = Jugador.query.all()
-    jugadores_ordenados = sorted(jugadores, key=lambda j: j.mejor_puntuacion, reverse=True)
-    return render_template('admin.html', jugadores=jugadores_ordenados)
+    
+    # Crear una lista de tuplas (jugador, mejor_puntuacion, fecha_mejor_puntuacion)
+    jugadores_con_fecha = []
+    for jugador in jugadores:
+        if jugador.puntuaciones:
+            # Encontrar la puntuación más alta
+            mejor_puntuacion = max(jugador.puntuaciones, key=lambda p: p.puntos)
+            jugadores_con_fecha.append((jugador, mejor_puntuacion.puntos, mejor_puntuacion.fecha))
+        else:
+            jugadores_con_fecha.append((jugador, 0, None))
+    
+    # Ordenar por puntuación (descendente) y fecha (ascendente en caso de empate)
+    jugadores_ordenados = sorted(jugadores_con_fecha, 
+                                key=lambda x: (-x[1], x[2] if x[2] else datetime.max))
+    
+    return render_template('admin.html', jugadores_con_fecha=jugadores_ordenados)
 
 # Función para crear un administrador
 def create_admin(usuario, password):
