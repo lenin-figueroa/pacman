@@ -18,8 +18,19 @@ class Jugador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), unique=True, nullable=False)
     telefono = db.Column(db.String(20), unique=True, nullable=False)
-    puntuacion = db.Column(db.Integer, default=0, nullable=False)
-    fecha_puntuacion = db.Column(db.DateTime, nullable=True)
+    puntuaciones = db.relationship('Puntuacion', backref='jugador', lazy=True)
+    
+    @property
+    def mejor_puntuacion(self):
+        if not self.puntuaciones:
+            return 0
+        return max(p.puntos for p in self.puntuaciones)
+
+class Puntuacion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    puntos = db.Column(db.Integer, nullable=False)
+    fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    jugador_id = db.Column(db.Integer, db.ForeignKey('jugador.id'), nullable=False)
 
 class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,15 +76,25 @@ def registro():
         telefono = request.form['telefono']
         
         # Buscar si ya existe un jugador con ese nombre o teléfono
+        jugador = Jugador.query.filter_by(nombre=nombre, telefono=telefono).first()
+        
+        if jugador:
+            # Si el jugador existe y coinciden nombre y teléfono, iniciar sesión
+            session['jugador_id'] = jugador.id
+            session['jugador_nombre'] = jugador.nombre
+            flash('¡Bienvenido de nuevo!')
+            return redirect(url_for('juego'))
+        
+        # Si no existe el jugador, verificar si el nombre o teléfono están en uso por otro jugador
         jugador_por_nombre = Jugador.query.filter_by(nombre=nombre).first()
         jugador_por_telefono = Jugador.query.filter_by(telefono=telefono).first()
         
-        if jugador_por_nombre:
-            flash('Este nombre ya está registrado. Por favor, usa otro nombre.')
+        if jugador_por_nombre and jugador_por_nombre.telefono != telefono:
+            flash('Este nombre ya está registrado con otro teléfono. Por favor, usa otro nombre.')
             return redirect(url_for('registro'))
         
-        if jugador_por_telefono:
-            flash('Este teléfono ya está registrado. Por favor, usa otro teléfono.')
+        if jugador_por_telefono and jugador_por_telefono.nombre != nombre:
+            flash('Este teléfono ya está registrado con otro nombre. Por favor, usa otro teléfono.')
             return redirect(url_for('registro'))
         
         # Si no existe, crear nuevo jugador
@@ -100,35 +121,60 @@ def logout():
 @app.route('/juego')
 def juego():
     if 'jugador_id' not in session:
+        flash('Debes registrarte para jugar')
         return redirect(url_for('registro'))
-    return render_template('juego.html')
+    
+    # Verificar que el jugador existe en la base de datos
+    jugador = Jugador.query.get(session['jugador_id'])
+    if not jugador:
+        session.clear()
+        flash('Error: Jugador no encontrado. Por favor, regístrate nuevamente.')
+        return redirect(url_for('registro'))
+    
+    return render_template('juego.html', jugador=jugador)
 
 @app.route('/guardar_puntuacion', methods=['POST'])
 def guardar_puntuacion():
     if 'jugador_id' not in session:
         return {'success': False, 'error': 'No hay jugador registrado'}
     
-    puntos = request.json.get('puntos')
-    if puntos is not None:
+    try:
+        puntos = request.json.get('puntos')
+        if puntos is None:
+            return {'success': False, 'error': 'No se recibieron puntos'}
+        
+        # Convertir puntos a entero para asegurar que sea un número
+        puntos = int(puntos)
+        
         jugador = Jugador.query.get(session['jugador_id'])
-        if jugador and puntos > jugador.puntuacion:
-            jugador.puntuacion = puntos
-            jugador.fecha_puntuacion = datetime.utcnow()
-            db.session.commit()
-        return {'success': True, 'redirect': url_for('tabla_posiciones')}
-    return {'success': False}
+        if not jugador:
+            return {'success': False, 'error': 'Jugador no encontrado'}
+        
+        # Crear nueva puntuación
+        puntuacion = Puntuacion(puntos=puntos, jugador_id=jugador.id)
+        db.session.add(puntuacion)
+        db.session.commit()
+        print(f"Puntuación actualizada para {jugador.nombre}: {puntos}")
+        
+        return {'success': True}
+    except Exception as e:
+        print(f"Error al guardar puntuación: {str(e)}")
+        return {'success': False, 'error': f'Error al guardar puntuación: {str(e)}'}
 
 @app.route('/tabla_posiciones')
 def tabla_posiciones():
-    # Obtener los 10 mejores jugadores
-    mejores_jugadores = Jugador.query.order_by(Jugador.puntuacion.desc()).limit(10).all()
-    return render_template('tabla_posiciones.html', jugadores=mejores_jugadores)
+    # Obtener todos los jugadores y ordenarlos manualmente por mejor_puntuacion
+    jugadores = Jugador.query.all()
+    jugadores_ordenados = sorted(jugadores, key=lambda j: j.mejor_puntuacion, reverse=True)
+    return render_template('tabla_posiciones.html', jugadores=jugadores_ordenados[:10])
 
 @app.route('/admin')
 @login_required
 def admin_panel():
-    jugadores = Jugador.query.order_by(Jugador.puntuacion.desc()).all()
-    return render_template('admin.html', jugadores=jugadores)
+    # Obtener todos los jugadores y ordenarlos manualmente por mejor_puntuacion
+    jugadores = Jugador.query.all()
+    jugadores_ordenados = sorted(jugadores, key=lambda j: j.mejor_puntuacion, reverse=True)
+    return render_template('admin.html', jugadores=jugadores_ordenados)
 
 # Función para crear un administrador
 def create_admin(usuario, password):

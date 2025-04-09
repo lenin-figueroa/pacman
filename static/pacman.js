@@ -1151,7 +1151,11 @@ var PACMAN = (function () {
     };
 
     return {
-        "init": init
+        "init": init,
+        "loseLife": loseLife,
+        "user": user,
+        "score": function() { return user ? user.theScore() : 0; },
+        "getLives": function() { return user ? user.getLives() : 0; }
     };
 
 }());

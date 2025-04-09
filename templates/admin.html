@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>Panel de Administración - Pacman</title>
     <style>
         body {
@@ -11,113 +10,115 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
         }
-        .admin-container {
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 30px;
+
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFFF00;
             border-radius: 15px;
-            border: 3px solid #FFFF00;
-            width: 100%;
+            padding: 20px;
             max-width: 1000px;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+            margin: 0 auto;
+            box-shadow: 0 0 10px #FFFF00;
         }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
-            font-size: 28px;
-            text-shadow: 2px 2px 4px rgba(255, 255, 0, 0.5);
+            text-shadow: 0 0 10px #FFFF00;
         }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 30px;
+
+        .tabla-container {
+            overflow-x: auto;
         }
-        .stat-card {
-            background-color: rgba(255, 255, 0, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            flex: 1;
-            margin: 0 10px;
-        }
-        .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
+
         th, td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #FFFF00;
         }
+
         th {
-            background-color: rgba(255, 255, 0, 0.1);
-            font-weight: bold;
+            background-color: #333;
+            color: #FFFF00;
         }
+
         tr:hover {
-            background-color: rgba(255, 255, 0, 0.05);
+            background-color: rgba(255, 255, 0, 0.1);
         }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
+
+        .acciones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .boton {
             color: #FFFF00;
             text-decoration: none;
-            font-size: 16px;
+            padding: 5px 10px;
+            border: 1px solid #FFFF00;
+            border-radius: 3px;
+            transition: all 0.3s ease;
         }
-        .back-link:hover {
-            text-decoration: underline;
+
+        .boton:hover {
+            background-color: #FFFF00;
+            color: #000;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: 2px solid #FFFF00;
+            border-radius: 5px;
+        }
+
+        .puntuacion {
+            font-weight: bold;
+        }
+
+        .fecha {
+            font-size: 0.9em;
+            color: #BBB;
         }
     </style>
 </head>
 <body>
-    <div class="admin-container">
-        <h1>🔐 PANEL DE ADMINISTRACIÓN</h1>
+    <div class="container">
+        <h1>Panel de Administración</h1>
         
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total de Jugadores</h3>
-                <div class="stat-value">{{ jugadores|length }}</div>
-            </div>
-            <div class="stat-card">
-                <h3>Puntuación Más Alta</h3>
-                <div class="stat-value">{{ jugadores[0].puntuacion if jugadores else 0 }}</div>
-            </div>
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Mejor Puntuación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jugador in jugadores %}
+                    <tr>
+                        <td>{{ jugador.id }}</td>
+                        <td>{{ jugador.nombre }}</td>
+                        <td>{{ jugador.telefono }}</td>
+                        <td>{{ jugador.mejor_puntuacion }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Posición</th>
-                    <th>Nombre</th>
-                    <th>Teléfono</th>
-                    <th>Puntuación</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for jugador in jugadores %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ jugador.nombre }}</td>
-                    <td>{{ jugador.telefono }}</td>
-                    <td>{{ jugador.puntuacion }}</td>
-                    <td>{{ jugador.fecha_puntuacion.strftime('%d/%m/%Y %H:%M') if jugador.fecha_puntuacion else 'N/A' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
         
-        <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
+        <a href="{{ url_for('index') }}" class="boton volver">← Volver al inicio</a>
     </div>
 </body>
 </html> 
