@@ -7,7 +7,22 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'  # Cambiar en producción
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pacman.db'
+
+# Obtén el entorno desde una variable de entorno llamada FLASK_ENV
+ENVIRONMENT = os.getenv('FLASK_ENV', 'development')  # 'production' para Render
+
+if ENVIRONMENT == 'production':
+    # Configuración para el despliegue en Render
+    DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/pacman')
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+else:
+    # Configuración para el entorno de desarrollo local
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/reto_pacman'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -190,10 +205,4 @@ def create_admin(usuario, password):
             print(f"El administrador {usuario} ya existe")
 
 if __name__ == '__main__':
-    with app.app_context():
-        # Forzar la recreación de la base de datos
-        db.drop_all()
-        db.create_all()
-        # Crear un administrador por defecto si no existe
-        create_admin('admin', 'admin123')
     app.run(debug=True) 
