@@ -73,10 +73,15 @@ def init_db():
         if not admin:
             # Crear un administrador por defecto
             admin = Admin(usuario='admin')
-            admin.set_password('admin123')
+            admin.set_password('123alimentos456')
             db.session.add(admin)
             db.session.commit()
             print("Administrador por defecto creado")
+        else:
+            # Actualizar la contraseña del administrador existente
+            admin.set_password('123alimentos456')
+            db.session.commit()
+            print("Contraseña del administrador actualizada")
 
 # Llamar a init_db al inicio
 init_db()
