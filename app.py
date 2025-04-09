@@ -13,7 +13,7 @@ ENVIRONMENT = os.getenv('FLASK_ENV', 'development')  # 'production' para Render
 
 if ENVIRONMENT == 'production':
     # Configuración para el despliegue en Render
-    DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/pacman')
+    DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/reto_pacman')
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
@@ -61,6 +61,25 @@ class Admin(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Admin, int(user_id))
+
+# Inicializar la base de datos
+def init_db():
+    with app.app_context():
+        # Crear todas las tablas
+        db.create_all()
+        
+        # Verificar si ya existe un administrador
+        admin = Admin.query.filter_by(usuario='admin').first()
+        if not admin:
+            # Crear un administrador por defecto
+            admin = Admin(usuario='admin')
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+            print("Administrador por defecto creado")
+
+# Llamar a init_db al inicio
+init_db()
 
 # Rutas
 @app.route('/')
@@ -205,4 +224,4 @@ def create_admin(usuario, password):
             print(f"El administrador {usuario} ya existe")
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=False) 
