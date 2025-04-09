@@ -11,14 +11,43 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .admin-container {
-            max-width: 800px;
-            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #FFFF00;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
         }
         h1 {
             text-align: center;
             margin-bottom: 30px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 0, 0.5);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: rgba(255, 255, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 10px;
         }
         table {
             width: 100%;
@@ -31,43 +60,37 @@
             border-bottom: 1px solid #FFFF00;
         }
         th {
-            background-color: rgba(255, 255, 0, 0.2);
+            background-color: rgba(255, 255, 0, 0.1);
+            font-weight: bold;
         }
         tr:hover {
-            background-color: rgba(255, 255, 0, 0.1);
+            background-color: rgba(255, 255, 0, 0.05);
         }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background-color: rgba(0, 0, 0, 0.8);
-            border: 2px solid #FFFF00;
-            padding: 20px;
-            border-radius: 10px;
+        .back-link {
+            display: block;
             text-align: center;
+            margin-top: 20px;
+            color: #FFFF00;
+            text-decoration: none;
+            font-size: 16px;
         }
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
-        <h1>Panel de Administración</h1>
-
+        <h1>🔐 PANEL DE ADMINISTRACIÓN</h1>
+        
         <div class="stats">
             <div class="stat-card">
                 <h3>Total de Jugadores</h3>
-                <div class="stat-value">{{ puntuaciones|length }}</div>
+                <div class="stat-value">{{ jugadores|length }}</div>
             </div>
             <div class="stat-card">
                 <h3>Puntuación Más Alta</h3>
-                <div class="stat-value">{{ puntuaciones[0].puntos if puntuaciones else 0 }}</div>
+                <div class="stat-value">{{ jugadores[0].puntuacion if jugadores else 0 }}</div>
             </div>
         </div>
 
@@ -75,24 +98,26 @@
             <thead>
                 <tr>
                     <th>Posición</th>
-                    <th>Jugador</th>
+                    <th>Nombre</th>
                     <th>Teléfono</th>
                     <th>Puntuación</th>
                     <th>Fecha</th>
                 </tr>
             </thead>
             <tbody>
-                {% for puntuacion in puntuaciones %}
+                {% for jugador in jugadores %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ puntuacion.usuario.nombre }}</td>
-                    <td>{{ puntuacion.usuario.telefono }}</td>
-                    <td>{{ puntuacion.puntos }}</td>
-                    <td>{{ puntuacion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ jugador.nombre }}</td>
+                    <td>{{ jugador.telefono }}</td>
+                    <td>{{ jugador.puntuacion }}</td>
+                    <td>{{ jugador.fecha_puntuacion.strftime('%d/%m/%Y %H:%M') if jugador.fecha_puntuacion else 'N/A' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
+        <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
     </div>
 </body>
 </html> 

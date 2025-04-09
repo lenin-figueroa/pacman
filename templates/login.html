@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Pacman</title>
+    <title>Login Administrador - Pacman</title>
     <style>
         body {
             background-color: #000;
@@ -19,73 +19,84 @@
         .login-container {
             background-color: rgba(0, 0, 0, 0.8);
             padding: 30px;
-            border-radius: 10px;
-            border: 2px solid #FFFF00;
-            max-width: 400px;
+            border-radius: 15px;
+            border: 3px solid #FFFF00;
             width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
         }
         h1 {
             text-align: center;
             margin-bottom: 30px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 0, 0.5);
         }
         .form-group {
             margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #FFFF00;
-            background-color: #000;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
             color: #FFFF00;
-            border-radius: 5px;
+            font-size: 16px;
             box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
         }
         button {
             width: 100%;
-            padding: 12px;
-            background-color: #FFFF00;
+            padding: 15px;
+            background: rgba(255, 255, 0, 0.9);
             color: #000;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         button:hover {
-            background-color: #FFD700;
+            background: #FFFF00;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
         }
         .flash-messages {
             margin-bottom: 20px;
         }
         .flash-message {
-            background-color: #FF0000;
-            color: #FFF;
+            background-color: rgba(255, 0, 0, 0.2);
+            color: #FF6B6B;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
+            text-align: center;
         }
-        .links {
+        .back-link {
+            display: block;
             text-align: center;
             margin-top: 20px;
-        }
-        .links a {
             color: #FFFF00;
             text-decoration: none;
-            margin: 0 10px;
+            font-size: 16px;
         }
-        .links a:hover {
+        .back-link:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h1>Iniciar Sesión</h1>
+        <h1>🔐 LOGIN ADMINISTRADOR</h1>
         
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -96,19 +107,22 @@
                 </div>
             {% endif %}
         {% endwith %}
-
+        
         <form method="POST">
             <div class="form-group">
-                <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" required>
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="usuario" name="usuario" required>
             </div>
-            <button type="submit">Iniciar Sesión</button>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">INGRESAR</button>
         </form>
-
-        <div class="links">
-            <a href="{{ url_for('registro') }}">Registrarse</a>
-            <a href="{{ url_for('index') }}">Volver al inicio</a>
-        </div>
+        
+        <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
     </div>
 </body>
 </html> 

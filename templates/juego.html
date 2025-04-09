@@ -206,6 +206,8 @@
                     .then(data => {
                         if (data.success) {
                             console.log('Puntuación guardada correctamente');
+                            // Redirigir a la tabla de posiciones
+                            window.location.href = data.redirect;
                         }
                     })
                     .catch(error => {

@@ -14,22 +14,27 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # Modelos
-class Usuario(UserMixin, db.Model):
+class Jugador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    telefono = db.Column(db.String(20), nullable=False)
-    es_admin = db.Column(db.Boolean, default=False)
-    puntuaciones = db.relationship('Puntuacion', backref='usuario', lazy=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+    telefono = db.Column(db.String(20), unique=True, nullable=False)
+    puntuacion = db.Column(db.Integer, default=0, nullable=False)
+    fecha_puntuacion = db.Column(db.DateTime, nullable=True)
 
-class Puntuacion(db.Model):
+class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    puntos = db.Column(db.Integer, nullable=False)
-    fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    usuario = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+        
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return Admin.query.get(int(user_id))
 
 # Rutas
 @app.route('/')
@@ -39,14 +44,16 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        telefono = request.form['telefono']
-        usuario = Usuario.query.filter_by(telefono=telefono).first()
+        usuario = request.form['usuario']
+        password = request.form['password']
         
-        if usuario:
-            login_user(usuario)
-            return redirect(url_for('juego'))
+        admin = Admin.query.filter_by(usuario=usuario).first()
+        
+        if admin and admin.check_password(password):
+            login_user(admin)
+            return redirect(url_for('admin_panel'))
         else:
-            flash('Usuario no encontrado')
+            flash('Usuario o contraseña incorrectos')
             return redirect(url_for('login'))
     
     return render_template('login.html')
@@ -57,55 +64,90 @@ def registro():
         nombre = request.form['nombre']
         telefono = request.form['telefono']
         
-        # Permitir usuarios duplicados
-        usuario = Usuario(nombre=nombre, telefono=telefono)
-        db.session.add(usuario)
-        db.session.commit()
+        # Buscar si ya existe un jugador con ese nombre o teléfono
+        jugador_por_nombre = Jugador.query.filter_by(nombre=nombre).first()
+        jugador_por_telefono = Jugador.query.filter_by(telefono=telefono).first()
         
-        login_user(usuario)
+        if jugador_por_nombre:
+            flash('Este nombre ya está registrado. Por favor, usa otro nombre.')
+            return redirect(url_for('registro'))
+        
+        if jugador_por_telefono:
+            flash('Este teléfono ya está registrado. Por favor, usa otro teléfono.')
+            return redirect(url_for('registro'))
+        
+        # Si no existe, crear nuevo jugador
+        jugador = Jugador(nombre=nombre, telefono=telefono)
+        db.session.add(jugador)
+        db.session.commit()
+        flash('¡Registro exitoso! ¡A jugar!')
+        
+        # Guardar el ID del jugador en la sesión
+        session['jugador_id'] = jugador.id
+        session['jugador_nombre'] = jugador.nombre
+        
         return redirect(url_for('juego'))
     
     return render_template('registro.html')
 
 @app.route('/logout')
-@login_required
 def logout():
-    logout_user()
+    if current_user.is_authenticated:
+        logout_user()
+    session.clear()
     return redirect(url_for('index'))
 
 @app.route('/juego')
-@login_required
 def juego():
+    if 'jugador_id' not in session:
+        return redirect(url_for('registro'))
     return render_template('juego.html')
 
 @app.route('/guardar_puntuacion', methods=['POST'])
-@login_required
 def guardar_puntuacion():
+    if 'jugador_id' not in session:
+        return {'success': False, 'error': 'No hay jugador registrado'}
+    
     puntos = request.json.get('puntos')
     if puntos is not None:
-        puntuacion = Puntuacion(puntos=puntos, usuario_id=current_user.id)
-        db.session.add(puntuacion)
-        db.session.commit()
+        jugador = Jugador.query.get(session['jugador_id'])
+        if jugador and puntos > jugador.puntuacion:
+            jugador.puntuacion = puntos
+            jugador.fecha_puntuacion = datetime.utcnow()
+            db.session.commit()
         return {'success': True, 'redirect': url_for('tabla_posiciones')}
     return {'success': False}
 
 @app.route('/tabla_posiciones')
 def tabla_posiciones():
-    # Obtener las 10 mejores puntuaciones
-    mejores_puntuaciones = Puntuacion.query.order_by(Puntuacion.puntos.desc()).limit(10).all()
-    return render_template('tabla_posiciones.html', puntuaciones=mejores_puntuaciones)
+    # Obtener los 10 mejores jugadores
+    mejores_jugadores = Jugador.query.order_by(Jugador.puntuacion.desc()).limit(10).all()
+    return render_template('tabla_posiciones.html', jugadores=mejores_jugadores)
 
 @app.route('/admin')
 @login_required
-def admin():
-    if not current_user.es_admin:
-        flash('No tienes permiso para acceder a esta página')
-        return redirect(url_for('index'))
-    
-    puntuaciones = Puntuacion.query.order_by(Puntuacion.puntos.desc()).all()
-    return render_template('admin.html', puntuaciones=puntuaciones)
+def admin_panel():
+    jugadores = Jugador.query.order_by(Jugador.puntuacion.desc()).all()
+    return render_template('admin.html', jugadores=jugadores)
+
+# Función para crear un administrador
+def create_admin(usuario, password):
+    with app.app_context():
+        admin = Admin.query.filter_by(usuario=usuario).first()
+        if not admin:
+            admin = Admin(usuario=usuario)
+            admin.set_password(password)
+            db.session.add(admin)
+            db.session.commit()
+            print(f"Administrador {usuario} creado exitosamente")
+        else:
+            print(f"El administrador {usuario} ya existe")
 
 if __name__ == '__main__':
     with app.app_context():
+        # Forzar la recreación de la base de datos
+        db.drop_all()
         db.create_all()
+        # Crear un administrador por defecto si no existe
+        create_admin('admin', 'admin123')
     app.run(debug=True) 

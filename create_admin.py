@@ -1,24 +1,24 @@
-from app import app, db, Usuario
-from flask_login import login_user
+from app import app, db, Admin
 
-def create_admin_user(nombre, telefono):
+def create_admin_user(usuario, password):
     with app.app_context():
-        # Verificar si el usuario ya existe
-        usuario = Usuario.query.filter_by(telefono=telefono).first()
+        # Verificar si el administrador ya existe
+        admin = Admin.query.filter_by(usuario=usuario).first()
         
-        if usuario:
-            # Si el usuario existe, actualizarlo a admin
-            usuario.es_admin = True
+        if admin:
+            # Si el administrador existe, actualizar la contraseña
+            admin.set_password(password)
             db.session.commit()
-            print(f"Usuario {nombre} actualizado a administrador")
+            print(f"Administrador {usuario} actualizado exitosamente")
         else:
-            # Si no existe, crear nuevo usuario admin
-            usuario = Usuario(nombre=nombre, telefono=telefono, es_admin=True)
-            db.session.add(usuario)
+            # Si no existe, crear nuevo administrador
+            admin = Admin(usuario=usuario)
+            admin.set_password(password)
+            db.session.add(admin)
             db.session.commit()
-            print(f"Usuario administrador {nombre} creado exitosamente")
+            print(f"Administrador {usuario} creado exitosamente")
 
 if __name__ == "__main__":
-    nombre = input("Ingrese el nombre del administrador: ")
-    telefono = input("Ingrese el teléfono del administrador: ")
-    create_admin_user(nombre, telefono) 
+    usuario = input("Ingrese el nombre de usuario del administrador: ")
+    password = input("Ingrese la contraseña del administrador: ")
+    create_admin_user(usuario, password) 

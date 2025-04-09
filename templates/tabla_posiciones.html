@@ -11,117 +11,82 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        .tabla-container {
+        .table-container {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #FFFF00;
+            width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
         }
         h1 {
             text-align: center;
             margin-bottom: 30px;
-            font-size: 36px;
+            font-size: 28px;
             text-shadow: 2px 2px 4px rgba(255, 255, 0, 0.5);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            overflow: hidden;
         }
         th, td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #FFFF00;
         }
         th {
-            background-color: rgba(255, 255, 0, 0.2);
-            font-size: 18px;
+            background-color: rgba(255, 255, 0, 0.1);
+            font-weight: bold;
         }
         tr:hover {
-            background-color: rgba(255, 255, 0, 0.1);
+            background-color: rgba(255, 255, 0, 0.05);
         }
-        .posicion {
-            font-weight: bold;
-            font-size: 20px;
-        }
-        .puntos {
-            font-weight: bold;
-            color: #FFD700;
-        }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .button {
-            display: inline-block;
-            background: rgba(255, 255, 0, 0.9);
-            color: #000;
-            border: 3px solid #000;
-            border-radius: 15px;
-            padding: 15px 30px;
-            font-size: 20px;
-            font-weight: bold;
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #FFFF00;
             text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 16px;
         }
-        .button:hover {
-            background: #FFFF00;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        .back-link:hover {
+            text-decoration: underline;
         }
-        .medalla {
-            font-size: 24px;
-            margin-right: 10px;
-        }
-        .oro { color: #FFD700; }
-        .plata { color: #C0C0C0; }
-        .bronce { color: #CD7F32; }
     </style>
 </head>
 <body>
-    <div class="tabla-container">
-        <h1>🏆 TABLA DE POSICIONES 🏆</h1>
-
+    <div class="table-container">
+        <h1>🏆 TABLA DE POSICIONES</h1>
+        
         <table>
             <thead>
                 <tr>
                     <th>Posición</th>
-                    <th>Jugador</th>
+                    <th>Nombre</th>
                     <th>Puntuación</th>
                     <th>Fecha</th>
                 </tr>
             </thead>
             <tbody>
-                {% for puntuacion in puntuaciones %}
+                {% for jugador in jugadores %}
                 <tr>
-                    <td class="posicion">
-                        {% if loop.index == 1 %}
-                            <span class="medalla oro">🥇</span>
-                        {% elif loop.index == 2 %}
-                            <span class="medalla plata">🥈</span>
-                        {% elif loop.index == 3 %}
-                            <span class="medalla bronce">🥉</span>
-                        {% else %}
-                            #{{ loop.index }}
-                        {% endif %}
-                    </td>
-                    <td>{{ puntuacion.usuario.nombre }}</td>
-                    <td class="puntos">{{ puntuacion.puntos }}</td>
-                    <td>{{ puntuacion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ jugador.nombre }}</td>
+                    <td>{{ jugador.puntuacion }}</td>
+                    <td>{{ jugador.fecha_puntuacion.strftime('%d/%m/%Y %H:%M') if jugador.fecha_puntuacion else 'N/A' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        <div class="buttons">
-            <a href="{{ url_for('juego') }}" class="button">JUGAR DE NUEVO</a>
-            <a href="{{ url_for('index') }}" class="button">VOLVER AL INICIO</a>
-        </div>
+        
+        <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
     </div>
 </body>
 </html> 
