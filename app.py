@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -45,7 +45,7 @@ class Admin(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    return db.session.get(Admin, int(user_id))
 
 # Rutas
 @app.route('/')
@@ -125,7 +125,7 @@ def juego():
         return redirect(url_for('registro'))
     
     # Verificar que el jugador existe en la base de datos
-    jugador = Jugador.query.get(session['jugador_id'])
+    jugador = db.session.get(Jugador, session['jugador_id'])
     if not jugador:
         session.clear()
         flash('Error: Jugador no encontrado. Por favor, regístrate nuevamente.')
@@ -136,19 +136,19 @@ def juego():
 @app.route('/guardar_puntuacion', methods=['POST'])
 def guardar_puntuacion():
     if 'jugador_id' not in session:
-        return {'success': False, 'error': 'No hay jugador registrado'}
+        return jsonify({'success': False, 'error': 'No hay jugador registrado'})
     
     try:
         puntos = request.json.get('puntos')
         if puntos is None:
-            return {'success': False, 'error': 'No se recibieron puntos'}
+            return jsonify({'success': False, 'error': 'No se recibieron puntos'})
         
         # Convertir puntos a entero para asegurar que sea un número
         puntos = int(puntos)
         
-        jugador = Jugador.query.get(session['jugador_id'])
+        jugador = db.session.get(Jugador, session['jugador_id'])
         if not jugador:
-            return {'success': False, 'error': 'Jugador no encontrado'}
+            return jsonify({'success': False, 'error': 'Jugador no encontrado'})
         
         # Crear nueva puntuación
         puntuacion = Puntuacion(puntos=puntos, jugador_id=jugador.id)
@@ -156,10 +156,10 @@ def guardar_puntuacion():
         db.session.commit()
         print(f"Puntuación actualizada para {jugador.nombre}: {puntos}")
         
-        return {'success': True}
+        return jsonify({'success': True})
     except Exception as e:
         print(f"Error al guardar puntuación: {str(e)}")
-        return {'success': False, 'error': f'Error al guardar puntuación: {str(e)}'}
+        return jsonify({'success': False, 'error': f'Error al guardar puntuación: {str(e)}'})
 
 @app.route('/tabla_posiciones')
 def tabla_posiciones():

@@ -183,55 +183,6 @@
             Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
             window.setTimeout(function () { 
                 PACMAN.init(el, "{{ url_for('static', filename='') }}");
-                
-                // Función para guardar la puntuación
-                function guardarPuntuacion(score) {
-                    console.log('Intentando guardar puntuación:', score);
-                    fetch('/guardar_puntuacion', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            puntos: score
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('Puntuación guardada correctamente');
-                            setTimeout(function() {
-                                window.location.href = '{{ url_for("index") }}';
-                            }, 1000); // Esperar 1 segundo antes de redireccionar
-                        } else {
-                            console.error('Error al guardar la puntuación:', data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al guardar la puntuación:', error);
-                    });
-                }
-                
-                // Modificar la función de loseLife para guardar la puntuación
-                var originalLoseLife = PACMAN.loseLife;
-                PACMAN.loseLife = function() {
-                    var currentLives = PACMAN.getLives();
-                    var finalScore = PACMAN.score();
-                    console.log('Vidas restantes:', currentLives, 'Puntuación:', finalScore);
-                    
-                    if (currentLives <= 1) {  // Si esta es la última vida
-                        console.log('Última vida perdida, guardando puntuación:', finalScore);
-                        guardarPuntuacion(finalScore);
-                    }
-                    originalLoseLife.call(this);  // Usar call para mantener el contexto correcto
-                };
-
-                // Agregar función para manejar el fin del juego
-                PACMAN.gameOver = function() {
-                    var finalScore = PACMAN.score();
-                    console.log('Juego terminado, guardando puntuación final:', finalScore);
-                    guardarPuntuacion(finalScore);
-                };
             }, 0);
         } else {
             el.innerHTML = "Sorry, needs a decent browser<br /><small>" +

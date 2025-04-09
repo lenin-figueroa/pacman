@@ -905,7 +905,13 @@ var PACMAN = (function () {
     function loseLife() {
         setState(WAITING);
         user.loseLife();
-        if (user.getLives() > 0) {
+        
+        // Guardar la puntuación cuando el jugador pierde su última vida
+        if (user.getLives() <= 0) {
+            var finalScore = user.theScore();
+            console.log('Última vida perdida, guardando puntuación:', finalScore);
+            guardarPuntuacion(finalScore);
+        } else {
             startLevel();
         }
     }
@@ -1147,6 +1153,13 @@ var PACMAN = (function () {
             startNewGame();
         });
 
+        // Agregar función para manejar el fin del juego
+        PACMAN.gameOver = function() {
+            var finalScore = user.theScore();
+            console.log('Juego terminado, guardando puntuación final:', finalScore);
+            guardarPuntuacion(finalScore);
+        };
+
         timer = window.setInterval(mainLoop, 1000 / Pacman.FPS);
     };
 
@@ -1332,3 +1345,34 @@ Object.prototype.clone = function () {
     }
     return newObj;
 };
+
+// Función para guardar la puntuación
+function guardarPuntuacion(score) {
+    console.log('Intentando guardar puntuación:', score);
+    fetch('/guardar_puntuacion', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            puntos: score
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Puntuación guardada correctamente');
+            // Mostrar mensaje de éxito y luego redirigir
+            setTimeout(function() {
+                window.location.href = '/tabla_posiciones';
+            }, 2000);
+        } else {
+            console.error('Error al guardar la puntuación:', data.error);
+            alert('Error al guardar la puntuación. Intenta nuevamente.');
+        }
+    })
+    .catch(error => {
+        console.error('Error al guardar la puntuación:', error);
+        alert('Error de conexión al guardar la puntuación.');
+    });
+}
