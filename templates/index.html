@@ -67,6 +67,13 @@
             font-size: 22px;
             line-height: 1.5;
         }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
     </style>
 </head>
 
@@ -78,7 +85,7 @@
             ¡Bienvenido al juego de Pacman! Registra tu nombre y número de teléfono para comenzar a jugar y competir por los mejores puntajes.
         </div>
 
-        <div>
+        <div class="buttons-container">
             <a href="{{ url_for('registro') }}" class="button">REGISTRARSE</a>
         </div>
     </div>
