@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Pacman Alimentos - Inicio</title>
+
+    <style>
+        @font-face {
+            font-family: 'BDCartoonShoutRegular';
+            src: url('{{ url_for("static", filename="BD_Cartoon_Shout-webfont.ttf") }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #000;
+            color: #FFFF00;
+            font-family: BDCartoonShoutRegular;
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 0, 0.5);
+        }
+
+        .button {
+            display: inline-block;
+            background: rgba(255, 255, 0, 0.9);
+            color: #000;
+            border: 3px solid #000;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 10px;
+            font-family: BDCartoonShoutRegular;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .button:hover {
+            background: #FFFF00;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+
+        .description {
+            margin: 30px 0;
+            font-size: 22px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>PACMAN ALIMENTOS</h1>
+        
+        <div class="description">
+            ¡Bienvenido al juego de Pacman! Registra tu nombre y número de teléfono para comenzar a jugar y competir por los mejores puntajes.
+        </div>
+
+        <div>
+            <a href="{{ url_for('registro') }}" class="button">REGISTRARSE</a>
+        </div>
+    </div>
+</body>
+</html> 
