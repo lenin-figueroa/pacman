@@ -252,8 +252,7 @@ tr:hover {
     justify-content: center;
     gap: 20px;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    height: 100%;
     padding: 20px;
     flex: 1;
 }
@@ -296,7 +295,7 @@ tr:hover {
 .control-btn {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: 30%;
     background: rgba(254, 120, 9, 0.8);
     border: 3px solid var(--negro);
     color: var(--negro);
