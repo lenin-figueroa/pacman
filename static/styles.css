@@ -36,7 +36,7 @@ body {
     width: 90%;
     margin: 0 auto;
     padding: 20px;
-    background: #1e7386;
+    background: #0000007d;
     border: 2px solid var(--rojo);
     border-radius: 15px;
     box-shadow: 0 0 10px var(--rojo-oscuro);
@@ -264,6 +264,14 @@ tr:hover {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
+}
+
+#pacman canvas {
+    background-color: var(--azul) !important;
+}
+
+#pacman canvas path {
+    stroke: var(--blanco) !important;
 }
 
 #shim {

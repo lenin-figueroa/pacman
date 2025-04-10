@@ -607,7 +607,7 @@ Pacman.Map = function (size) {
 
         var i, j, p, line;
 
-        ctx.strokeStyle = "#0000FF";
+        ctx.strokeStyle = "#FFFFFF";
         ctx.lineWidth = 5;
         ctx.lineCap = "round";
 
@@ -953,7 +953,7 @@ var PACMAN = (function () {
         ctx.fillText("s", 10, textBase);
 
         ctx.fillStyle = "#FFFF00";
-        ctx.font = "14px BDCartoonShoutRegular";
+        ctx.font = "14px Super Cartoon";
         ctx.fillText("Puntos: " + user.theScore(), 30, textBase);
         ctx.fillText("Nivel: " + level, 260, textBase);
     }
