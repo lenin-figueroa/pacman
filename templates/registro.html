@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Jugador - Pacman</title>
+    <title>Coloca tu nombre y teléfono</title>
     <style>
         body {
             background-color: #000;
@@ -96,7 +96,8 @@
 </head>
 <body>
     <div class="registro-container">
-        <h1>🎮 REGISTRO DE JUGADOR</h1>
+        <h1>🎮 Coloca tu nombre y teléfono</h1>
+        <h3>Si ya jugaste antes, usa el mismo nombre y teléfono</h3>
         
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -119,7 +120,7 @@
                 <input type="tel" id="telefono" name="telefono" required>
             </div>
             
-            <button type="submit">REGISTRARSE</button>
+            <button type="submit">EMPEZAR JUEGO</button>
         </form>
         
         <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>

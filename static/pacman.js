@@ -1368,11 +1368,11 @@ function guardarPuntuacion(score) {
             }, 2000);
         } else {
             console.error('Error al guardar la puntuación:', data.error);
-            alert('Error al guardar la puntuación. Intenta nuevamente.');
+            alert('Error al guardar la puntuación. Intenta nuevamente.', error);
         }
     })
     .catch(error => {
         console.error('Error al guardar la puntuación:', error);
-        alert('Error de conexión al guardar la puntuación.');
+        alert('Error de conexión al guardar la puntuación.', error);
     });
 }

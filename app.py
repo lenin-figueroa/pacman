@@ -257,4 +257,4 @@ def create_admin(usuario, password):
             print(f"El administrador {usuario} ya existe")
 
 if __name__ == '__main__':
-    app.run(debug=False) 
+    app.run(debug=True) 
