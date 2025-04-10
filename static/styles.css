@@ -145,7 +145,7 @@ button:hover {
 }
 
 .flash-message {
-    background-color: rgba(175, 23, 22, 0.2);
+    background-color: rgb(0, 0, 0);
     color: var(--rojo);
     padding: 10px;
     border-radius: 5px;
