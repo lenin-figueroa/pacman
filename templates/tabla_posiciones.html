@@ -3,96 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Tabla de Posiciones - Pacman</title>
-    <style>
-        body {
-            background-color: #000;
-            color: #FFFF00;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #FFFF00;
-            border-radius: 15px;
-            padding: 20px;
-            max-width: 800px;
-            width: 100%;
-            box-shadow: 0 0 10px #FFFF00;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #FFFF00;
-        }
-
-        .tabla-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #FFFF00;
-        }
-
-        th {
-            background-color: #333;
-            color: #FFFF00;
-        }
-
-        tr:hover {
-            background-color: rgba(255, 255, 0, 0.1);
-        }
-
-        .volver {
-            color: #FFFF00;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: 2px solid #FFFF00;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .volver:hover {
-            background-color: #FFFF00;
-            color: #000;
-        }
-
-        .puntuacion {
-            font-weight: bold;
-        }
-
-        .top-3 {
-            font-weight: bold;
-        }
-
-        .oro {
-            color: #FFD700;
-        }
-
-        .plata {
-            color: #C0C0C0;
-        }
-
-        .bronce {
-            color: #CD7F32;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
@@ -111,11 +22,7 @@
                     {% for jugador, puntuacion, fecha in jugadores_con_puntuacion %}
                     <tr>
                         <td>
-                            {% if loop.index == 1 %}
-                                <span class="top-3 oro">🥇</span>
-                            {% else %}
-                                {{ loop.index }}
-                            {% endif %}
+                            {{ loop.index }}
                         </td>
                         <td>{{ jugador.nombre }}</td>
                         <td class="puntuacion">{{ puntuacion }}</td>
@@ -125,7 +32,7 @@
             </table>
         </div>
         
-        <a href="{{ url_for('index') }}" class="volver">← Volver al inicio</a>
+        <a href="{{ url_for('index') }}" class="volver button">← Volver al inicio</a>
     </div>
 </body>
 </html> 
