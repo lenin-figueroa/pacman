@@ -207,18 +207,6 @@ tr:hover {
     font-weight: bold;
 }
 
-.oro {
-    color: #FFD700;
-}
-
-.plata {
-    color: #C0C0C0;
-}
-
-.bronce {
-    color: #CD7F32;
-}
-
 /* Panel de administración */
 .acciones {
     display: flex;
@@ -250,10 +238,8 @@ tr:hover {
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    gap: 20px;
     width: 100%;
     height: 100%;
-    padding: 20px;
     flex: 1;
 }
 
