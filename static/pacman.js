@@ -34,7 +34,7 @@ Pacman.Ghost = function (game, map, colour) {
         currentLevel = 1;
 
     function getNewCoord(dir, current) {
-        var levelSpeed = Math.min(baseSpeed + (currentLevel * 0.2), 4);
+        var levelSpeed = Math.min(baseSpeed + (currentLevel * 0.1), 4);
         var speed = isVunerable() ? 1 : isHidden() ? 4 : levelSpeed,
             xSpeed = (dir === LEFT && -speed || dir === RIGHT && speed || 0),
             ySpeed = (dir === DOWN && speed || dir === UP && -speed || 0);
@@ -273,7 +273,7 @@ Pacman.Ghost = function (game, map, colour) {
     };
 
     function getVulnerableDuration() {
-        return Math.max(8 - (currentLevel * 0.5), 3);
+        return Math.max(8 - (currentLevel * 0.5), 5);
     };
 
     return {
@@ -1090,7 +1090,6 @@ var PACMAN = (function () {
         setState(WAITING);
         level += 1;
         map.reset();
-        user.newLevel();
         
         // Actualizar la dificultad de los fantasmas
         for (var i = 0; i < ghosts.length; i += 1) {
