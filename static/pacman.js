@@ -526,7 +526,7 @@ Pacman.User = function (game, map) {
             return;
         }
 
-        ctx.fillStyle = "#FFFF00";
+        ctx.fillStyle = "#FEAB27";
         ctx.beginPath();
         ctx.moveTo(((position.x / 10) * size) + half,
             ((position.y / 10) * size) + half);
@@ -543,7 +543,7 @@ Pacman.User = function (game, map) {
         var s = map.blockSize,
             angle = calcAngle(direction, position);
 
-        ctx.fillStyle = "#FFFF00";
+        ctx.fillStyle = "#FEAB27";
 
         ctx.beginPath();
 
@@ -823,7 +823,7 @@ var PACMAN = (function () {
     var state = WAITING,
         audio = null,
         ghosts = [],
-        ghostSpecs = ["#00FFDE", "#FF0000", "#FFB8DE", "#FFB847"],
+        ghostSpecs = ["#ae13d3", "#f28a22", "#ec4424", "#4eb972"],
         eatenCount = 0,
         level = 0,
         tick = 0,
@@ -850,7 +850,7 @@ var PACMAN = (function () {
     }
 
     function dialog(text) {
-        ctx.fillStyle = "#FFFF00";
+        ctx.fillStyle = "#FEAB27";
         ctx.font = "14px BDCartoonShoutRegular";
         var width = ctx.measureText(text).width,
             x = ((map.width * map.blockSize) - width) / 2;
@@ -927,35 +927,40 @@ var PACMAN = (function () {
     };
 
     function drawFooter() {
-
         var topLeft = (map.height * map.blockSize),
-            textBase = topLeft + 17;
+            textBase = topLeft + 20,
+            width = map.width * map.blockSize;
 
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, topLeft, (map.width * map.blockSize), 30);
+        // Limpiar el área del footer primero
+        ctx.clearRect(0, topLeft, width, 35);
 
-        ctx.fillStyle = "#FFFF00";
+        // Fondo semitransparente
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(0, topLeft, width, 35);
 
+        // Configuración del texto
+        ctx.fillStyle = "#FEAB27";
+        ctx.font = "24px Super Cartoon";
+
+        // Nivel a la izquierda
+        ctx.textAlign = "left";
+        ctx.fillText("NIVEL: " + level, 20, textBase);
+
+        // Vidas centradas
+        var livesStartX = width / 2 - (user.getLives() * 15);
         for (var i = 0, len = user.getLives(); i < len; i++) {
-            ctx.fillStyle = "#FFFF00";
             ctx.beginPath();
-            ctx.moveTo(150 + (25 * i) + map.blockSize / 2,
-                (topLeft + 1) + map.blockSize / 2);
-
-            ctx.arc(150 + (25 * i) + map.blockSize / 2,
-                (topLeft + 1) + map.blockSize / 2,
-                map.blockSize / 2, Math.PI * 0.25, Math.PI * 1.75, false);
+            ctx.moveTo(livesStartX + (30 * i), topLeft + 17);
+            ctx.arc(livesStartX + (30 * i), topLeft + 17, 13, Math.PI * 0.25, Math.PI * 1.75, false);
             ctx.fill();
         }
 
-        ctx.fillStyle = !soundDisabled() ? "#00FF00" : "#FF0000";
-        ctx.font = "bold 16px sans-serif";
-        ctx.fillText("s", 10, textBase);
+        // Puntos alineados a la derecha
+        ctx.textAlign = "right";
+        ctx.fillText("PUNTOS: " + user.theScore(), width - 20, textBase);
 
-        ctx.fillStyle = "#FFFF00";
-        ctx.font = "14px Super Cartoon";
-        ctx.fillText("Puntos: " + user.theScore(), 30, textBase);
-        ctx.fillText("Nivel: " + level, 260, textBase);
+        // Restaurar alineación por defecto
+        ctx.textAlign = "left";
     }
 
     function redrawBlock(pos) {
