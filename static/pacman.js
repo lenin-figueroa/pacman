@@ -951,7 +951,7 @@ var PACMAN = (function () {
 
         // Configuración del texto
         ctx.fillStyle = "#FEAB27";
-        ctx.font = "24px Super Cartoon";
+        ctx.font = "12px Super Cartoon";
 
         // Nivel a la izquierda
         ctx.textAlign = "left";
