@@ -274,17 +274,16 @@ tr:hover {
         ". up ."
         "left . right"
         ". down .";
-    gap: 10px;
     width: 100%;
-    max-width: 300px;
+    max-width: 200px;
     aspect-ratio: 1;
-    padding: 10px;
-    margin: 20px auto 0;
+    margin: 5px auto 0;
+    gap: 0px;
 }
 
 .control-btn {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 30%;
     background: rgba(254, 120, 9, 0.8);
     border: 3px solid var(--negro);
@@ -339,7 +338,6 @@ tr:hover {
     .game-container {
         flex-direction: row;
         justify-content: center;
-        gap: 40px;
     }
 
     #pacman {
@@ -367,9 +365,4 @@ tr:hover {
         height: auto;
     }
 
-    #touch-controls {
-        width: 100%;
-        max-width: 280px;
-        margin-top: 20px;
-    }
 } 
