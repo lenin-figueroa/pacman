@@ -29,11 +29,13 @@ Pacman.Ghost = function (game, map, colour) {
         direction = null,
         eatable = null,
         eaten = null,
-        due = null;
+        due = null,
+        baseSpeed = 2,
+        currentLevel = 1;
 
     function getNewCoord(dir, current) {
-
-        var speed = isVunerable() ? 1 : isHidden() ? 4 : 2,
+        var levelSpeed = Math.min(baseSpeed + (currentLevel * 0.2), 4);
+        var speed = isVunerable() ? 1 : isHidden() ? 4 : levelSpeed,
             xSpeed = (dir === LEFT && -speed || dir === RIGHT && speed || 0),
             ySpeed = (dir === DOWN && speed || dir === UP && -speed || 0);
 
@@ -145,7 +147,7 @@ Pacman.Ghost = function (game, map, colour) {
             top = (position.y / 10) * s,
             left = (position.x / 10) * s;
 
-        if (eatable && secondsAgo(eatable) > 8) {
+        if (eatable && secondsAgo(eatable) > getVulnerableDuration()) {
             eatable = null;
         }
 
@@ -266,6 +268,14 @@ Pacman.Ghost = function (game, map, colour) {
         };
     };
 
+    function setLevel(level) {
+        currentLevel = level;
+    };
+
+    function getVulnerableDuration() {
+        return Math.max(8 - (currentLevel * 0.5), 3);
+    };
+
     return {
         "eat": eat,
         "isVunerable": isVunerable,
@@ -273,7 +283,8 @@ Pacman.Ghost = function (game, map, colour) {
         "makeEatable": makeEatable,
         "reset": reset,
         "move": move,
-        "draw": draw
+        "draw": draw,
+        "setLevel": setLevel
     };
 };
 
@@ -1080,6 +1091,12 @@ var PACMAN = (function () {
         level += 1;
         map.reset();
         user.newLevel();
+        
+        // Actualizar la dificultad de los fantasmas
+        for (var i = 0; i < ghosts.length; i += 1) {
+            ghosts[i].setLevel(level);
+        }
+        
         startLevel();
     };
 
