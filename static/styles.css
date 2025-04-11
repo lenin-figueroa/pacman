@@ -343,8 +343,10 @@ tr:hover {
 
 @media (max-width: 1023px) {
     .game-container {
-        flex-direction: column;
+        flex-direction: row;
     }
+
+    
 
     #pacman {
         margin-bottom: 5px;
