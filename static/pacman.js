@@ -30,7 +30,7 @@ Pacman.Ghost = function (game, map, colour) {
         eatable = null,
         eaten = null,
         due = null,
-        baseSpeed = 2,
+        baseSpeed = 1,
         currentLevel = 1;
 
     function getNewCoord(dir, current) {
