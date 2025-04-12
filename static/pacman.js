@@ -1090,13 +1090,21 @@ var PACMAN = (function () {
         setState(WAITING);
         level += 1;
         map.reset();
+        user.newLevel();
         
         // Actualizar la dificultad de los fantasmas
         for (var i = 0; i < ghosts.length; i += 1) {
             ghosts[i].setLevel(level);
+            ghosts[i].reset();
         }
         
-        startLevel();
+        // Reiniciar el contador de puntos comidos
+        eaten = 0;
+        
+        // Iniciar el siguiente nivel
+        setTimeout(function() {
+            startLevel();
+        }, 1000);
     };
 
     function keyPress(e) {
