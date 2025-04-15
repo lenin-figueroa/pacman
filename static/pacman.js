@@ -674,14 +674,32 @@ Pacman.Map = function (size) {
                     ctx.fillRect((j * blockSize), (i * blockSize),
                         blockSize, blockSize);
 
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.arc((j * blockSize) + blockSize / 2,
-                        (i * blockSize) + blockSize / 2,
-                        Math.abs(5 - (pillSize / 3)),
-                        0,
-                        Math.PI * 2, false);
-                    ctx.fill();
+                    // Dibujar una estrella más grande
+                    var centerX = (j * blockSize) + blockSize / 2;
+                    var centerY = (i * blockSize) + blockSize / 2;
+                    var spikes = 5;
+                    // Usamos seno para una transición suave entre 5 y 10
+                    var outerRadius = 7.5 + 2.5 * Math.sin(pillSize * Math.PI / 15);
+                    var innerRadius = outerRadius / 2;
+
+                    ctx.fillStyle = "#FEAB27"; // Cambiado a amarillo de Pacman
+                    ctx.beginPath();
+                    
+                    for (var k = 0; k < spikes * 2; k++) {
+                        var radius = k % 2 === 0 ? outerRadius : innerRadius;
+                        var angle = (Math.PI / spikes) * k;
+                        var x = centerX + Math.cos(angle) * radius;
+                        var y = centerY + Math.sin(angle) * radius;
+                        
+                        if (k === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    
                     ctx.closePath();
+                    ctx.fill();
                 }
             }
         }
